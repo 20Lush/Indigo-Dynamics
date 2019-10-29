@@ -1,10 +1,12 @@
 #include "subsystems/baseDrive.h"
+#include "commands/baseControl.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 baseDrive::baseDrive() : Subsystem("ExampleSubsystem") {}
 
 void baseDrive::InitDefaultCommand() {
   // Set the default command for a subsystem here.
-  // SetDefaultCommand(new MySpecialCommand());
+   SetDefaultCommand(new baseControl());
 }
 
 void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2){
