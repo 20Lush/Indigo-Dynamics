@@ -7,7 +7,12 @@
 
 #pragma once
 
+#include <frc/Joystick.h>
+#include <frc/buttons/JoystickButton.h>
+
 class OI {
  public:
   OI();
+  frc::Joystick *js1 = new frc::Joystick(0);
+
 };
