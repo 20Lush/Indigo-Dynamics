@@ -11,4 +11,6 @@
 
 OI::OI() {
   // Process operator interface input here.
+
+  //hint: make a command that activates the xyJoystick control method
 }
