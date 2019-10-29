@@ -13,6 +13,6 @@
 class OI {
  public:
   OI();
-  frc::Joystick *js1 = new frc::Joystick(0);
+  frc::Joystick *js1 = new frc::Joystick(0); //oh hey look, I created the joystick object for you
 
 };
