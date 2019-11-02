@@ -11,7 +11,7 @@
 #include <Robot.h>
 class baseControl : public frc::Command {
  public:
-  
+ 
   int leftStickX;
   int leftStickY;
   int rightStickX;

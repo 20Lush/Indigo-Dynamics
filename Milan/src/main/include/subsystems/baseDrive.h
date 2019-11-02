@@ -71,6 +71,15 @@ double swerveCorrectionBL;
 double swerveSetpointBL;
 
  public:
+
+ double encoderFRDiagnostic();
+ double encoderFLDiagnostic();
+ double encoderBRDiagnostic();
+ double encoderBLDiagnostic();
+
+double angularVector();
+double translationVector();
+
   baseDrive();
   void InitDefaultCommand() override;
   void xyJoystickControl(double inputX1, double inputY, double inputX2);
