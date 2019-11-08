@@ -12,9 +12,9 @@
 class baseControl : public frc::Command {
  public:
  
-  int leftStickX;
-  int leftStickY;
-  int rightStickX;
+  double leftStickX;
+  double leftStickY;
+  double rightStickX;
 
   baseControl();
   void Initialize() override;

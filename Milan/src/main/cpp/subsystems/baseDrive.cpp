@@ -26,18 +26,18 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   double W = 0; //SAME FOR WIDTH
   double diag = sqrt((L * L) + (W * W));
 
-  double a = inputX1 - inputX2 * (L / diag);
-  double b = inputX1 + inputX2 * (L / diag); //hint on the money problem, use a calculator to conceptualize.
-  double c = -inputY - inputX2 * (W / diag);  //what might happen when you divide the components of a quadralateral by the constituent diagonal :thinking:
-  double d = -inputY + inputX2 * (W / diag);  //the input y's might need to be inverted<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>><><><><
+  double a = (inputX1 - inputX2) * (L / diag);
+  double b = (inputX1 + inputX2) * (L / diag); //hint on the money problem, use a calculator to conceptualize.
+  double c = (-inputY - inputX2) * (W / diag);  //what might happen when you divide the components of a quadralateral by the constituent diagonal :thinking:
+  double d = (-inputY + inputX2) * (W / diag);  //the input y's might need to be inverted<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>><><><><
 
   //SENSOR IN EACH MOTOR DETECTS 7 PULSES PER REVOLUTION
 
   //Now to calculate the translation vector, or the speed vector or whatever
-  double translateFrontRight = sqrt((a * a) + (d * d));
+  double translateFrontRight = sqrt((b * b) + (d * d));
   double translateFrontLeft = sqrt((b * b) + (c * c));
   double translateBackRight = sqrt((a * a) + (d * d));
-  double translateBackLeft = sqrt((b * b) + (c * c));
+  double translateBackLeft = sqrt((a * a) + (c * c));
 
   //THE BEAST - 4 PIDS CONTROLLING LINEAR MOTION IN TWO DEMENTIONS
   //FR
@@ -82,16 +82,24 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   pivotBackRight->Set(swerveCorrectionBR);
   pivotBackLeft->Set(swerveCorrectionBL);
 
-  driveFrontRight->Set(translateFrontRight);
-  driveFrontLeft->Set(translateFrontLeft);
-  driveBackRight->Set(translateBackRight);
-  driveFrontLeft->Set(translateBackLeft);
+ // driveFrontRight->Set(translateFrontRight); we know these work so we can just comment it out to focus on the pivot vals
+  //driveFrontLeft->Set(translateFrontLeft);
+ // driveBackRight->Set(translateBackRight);
+ // driveBackLeft->Set(translateBackLeft);
 
   frc::SmartDashboard::PutNumber("Front Right Angle", swerveCurrFR);
   frc::SmartDashboard::PutNumber("Front Left Angle", swerveCurrFL);
   frc::SmartDashboard::PutNumber("Back Right Angle", swerveCurrBR);
   frc::SmartDashboard::PutNumber("Back Left Angle", swerveCurrBL);
 
-  frc::SmartDashboard::PutNumber("Angular Vector", swerveCorrectionBR);
+  frc::SmartDashboard::PutNumber("a", a);
+  frc::SmartDashboard::PutNumber("b", b);
+  frc::SmartDashboard::PutNumber("c", c);
+  frc::SmartDashboard::PutNumber("d", d);
+
+  frc::SmartDashboard::PutNumber("Sample Setpoint", swerveSetpointBL);
+  
+
+  frc::SmartDashboard::PutNumber("Angular Vector", swerveCorrectionBL);
   frc::SmartDashboard::PutNumber("Translation Vector", translateFrontRight);
 }
