@@ -24,12 +24,12 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
 
   double L = 0; //FIND LENGTH OF CHASSIS (WHEEL CONTACT TO WHEEL CONTACT)
   double W = 0; //SAME FOR WIDTH
-  double diag = sqrt((L * L) + (W * W));
+  double diag = sqrt((L * L) + (W * W)); //r
 
   double a = (inputX1 - inputX2) * (L / diag);
   double b = (inputX1 + inputX2) * (L / diag); //hint on the money problem, use a calculator to conceptualize.
-  double c = (-inputY - inputX2) * (W / diag);  //what might happen when you divide the components of a quadralateral by the constituent diagonal :thinking:
-  double d = (-inputY + inputX2) * (W / diag);  //the input y's might need to be inverted<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>><><><><
+  double c = (-inputY - inputX2) * (W / diag); //what might happen when you divide the components of a quadralateral by the constituent diagonal :thinking:
+  double d = (-inputY + inputX2) * (W / diag); //the input y's might need to be inverted<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>><><><><
 
   //SENSOR IN EACH MOTOR DETECTS 7 PULSES PER REVOLUTION
 
@@ -39,11 +39,13 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   double translateBackRight = sqrt((a * a) + (d * d));
   double translateBackLeft = sqrt((a * a) + (c * c));
 
+  //(59.3041667 * 7) is the conversion ratio that accounts for the final drive ratio AND pulse per rotation of the shit quad encoder
+
   //THE BEAST - 4 PIDS CONTROLLING LINEAR MOTION IN TWO DEMENTIONS
   //FR
   swerveSetpointFR = (atan2(b, d) / M_PI) * 180; //$5 to someone who can figure out why and how.
 
-  swerveCurrFR = (eFrontRight->Get() / 7) * 360; //gives out current angle in degrees because baby mode
+  swerveCurrFR = (eFrontRight->Get() / (59.3041667 * 7)) * 360; //gives out current angle in degrees because baby mode
   swerveErrFR = swerveCurrFR - swerveSetpointFR;
   swerveDerivativeFR = swerveErrFR - swervePrevErrFR;
   swervePrevErrFR = swerveErrFR;
@@ -52,7 +54,7 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   //FL
   swerveSetpointFL = (atan2(b, c) / M_PI) * 180;
 
-  swerveCurrFL = (eFrontLeft->Get() / 7) * 360;
+  swerveCurrFL = (eFrontLeft->Get() / (59.3041667 * 7)) * 360;
   swerveErrFL = swerveCurrFL - swerveSetpointFL;
   swerveDerivativeFL = swerveErrFL - swervePrevErrFL;
   swervePrevErrFL = swerveErrFL;
@@ -61,7 +63,7 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   //BR
   swerveSetpointBR = (atan2(a, d) / M_PI) * 180;
 
-  swerveCurrBR = (eBackRight->Get() / 7) * 360;
+  swerveCurrBR = (eBackRight->Get() / (59.3041667 * 7)) * 360;
   swerveErrBR = swerveCurrBR - swerveSetpointBR;
   swerveDerivativeBR = swerveErrBR - swervePrevErrFR;
   swervePrevErrBR = swerveErrBR;
@@ -70,7 +72,7 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   //BL
   swerveSetpointBL = (atan2(a, c) / M_PI) * 180;
 
-  swerveCurrBL = (eBackLeft->Get() / 7) * 360;
+  swerveCurrBL = (eBackLeft->Get() / (59.3041667 * 7)) * 360;
   swerveErrBL = swerveCurrBL - swerveSetpointBL;
   swerveDerivativeBL = swerveErrBL - swervePrevErrBL;
   swervePrevErrBL = swerveErrBL;
@@ -82,10 +84,10 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   pivotBackRight->Set(swerveCorrectionBR);
   pivotBackLeft->Set(swerveCorrectionBL);
 
- // driveFrontRight->Set(translateFrontRight); we know these work so we can just comment it out to focus on the pivot vals
+  // driveFrontRight->Set(translateFrontRight); we know these work so we can just comment it out to focus on the pivot vals
   //driveFrontLeft->Set(translateFrontLeft);
- // driveBackRight->Set(translateBackRight);
- // driveBackLeft->Set(translateBackLeft);
+  // driveBackRight->Set(translateBackRight);
+  // driveBackLeft->Set(translateBackLeft);
 
   frc::SmartDashboard::PutNumber("Front Right Angle", swerveCurrFR);
   frc::SmartDashboard::PutNumber("Front Left Angle", swerveCurrFL);
@@ -98,8 +100,6 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   frc::SmartDashboard::PutNumber("d", d);
 
   frc::SmartDashboard::PutNumber("Sample Setpoint", swerveSetpointBL);
-  
-
-  frc::SmartDashboard::PutNumber("Angular Vector", swerveCorrectionBL);
-  frc::SmartDashboard::PutNumber("Translation Vector", translateFrontRight);
+  frc::SmartDashboard::PutNumber("Sample Angular Vector", swerveCorrectionBL);
+  frc::SmartDashboard::PutNumber("Sample Translation Vector", translateFrontRight);
 }
