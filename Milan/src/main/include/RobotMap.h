@@ -19,13 +19,9 @@ constexpr int kPivotBackLeft = 9;
 constexpr int kPivotFrontRight = 3;
 constexpr int kPivotFrontLeft = 5;
 
-//Pivot Encoders
-/// 1 = A, 2 = B
-constexpr int kEncoderBackRight1 = 2;
-constexpr int kEncoderBackRight2 = 3;
-constexpr int kEncoderBackLeft1 = 7;
-constexpr int kEncoderBackLeft2 = 6;
-constexpr int kEncoderFrontRight1 = 0;
-constexpr int kEncoderFrontRight2 = 1;
-constexpr int kEncoderFrontLeft1 = 9;
-constexpr int kEncoderFrontLeft2 = 8;
+//Pivot Encoders (NOW ABSOLUTE ANALOG 12/1/2019)
+/// number corresponds to analog port :)
+constexpr int kEncoderFrontRight = 0;
+constexpr int kEncoderFrontLeft = 1;
+constexpr int kEncoderBackRight = 2; 
+constexpr int kEncoderBackLeft = 3;

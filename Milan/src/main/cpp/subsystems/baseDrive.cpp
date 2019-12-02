@@ -22,14 +22,14 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   //first we must calculate the geometrical distance of the diagonals across the chassis.
   //first person to figure out why gets $20 hard cash -ZJ
 
-  double L = 0; //FIND LENGTH OF CHASSIS (WHEEL CONTACT TO WHEEL CONTACT)
-  double W = 0; //SAME FOR WIDTH
+  double L = 0;                          //FIND LENGTH OF CHASSIS (WHEEL CONTACT TO WHEEL CONTACT)
+  double W = 0;                          //SAME FOR WIDTH
   double diag = sqrt((L * L) + (W * W)); //r
 
   double a = (inputX1 - inputX2) * (L / diag);
   double b = (inputX1 + inputX2) * (L / diag); //hint on the money problem, use a calculator to conceptualize.
-  double c = (inputY - inputX2) * (W / diag); //what might happen when you divide the components of a quadralateral by the constituent diagonal :thinking:
-  double d = (inputY + inputX2) * (W / diag); //the input y's might need to be inverted<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>><><><><
+  double c = (inputY - inputX2) * (W / diag);  //what might happen when you divide the components of a quadralateral by the constituent diagonal :thinking:
+  double d = (inputY + inputX2) * (W / diag);  //the input y's might need to be inverted<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>><><><><
 
   //SENSOR IN EACH MOTOR DETECTS 7 PULSES PER REVOLUTION
 
@@ -39,44 +39,44 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   double translateBackRight = sqrt((a * a) + (d * d));
   double translateBackLeft = sqrt((a * a) + (c * c));
 
-  //(59.3041667 * 7) is the conversion ratio that accounts for the final drive ratio AND pulse per rotation of the shit quad encoder
+  // 5 is the conversion ratio that accounts for the final drive ratio AND pulse per rotation of the shit quad encoder
 
   //THE BEAST - 4 PIDS CONTROLLING LINEAR MOTION IN TWO DEMENTIONS
   //FR
   swerveSetpointFR = (atan2(b, d) / M_PI) * 180; //$5 to someone who can figure out why and how.
 
-  swerveCurrFR = (-eFrontRight->Get() / (59.3041667 * 7)) * 360; //gives out current angle in degrees because baby mode
+  swerveCurrFR = (-eFrontRight->GetAccumulatorValue() / 5) * 360; //gives out current angle in degrees because baby mode
   swerveErrFR = swerveCurrFR - swerveSetpointFR;
   swerveDerivativeFR = swerveErrFR - swervePrevErrFR;
   swervePrevErrFR = swerveErrFR;
-  swerveCorrectionFR = kPSwerve * swerveErrFR + kDSwerve * swerveErrFR; //Sent correction to pivot motor on the front right
+  swerveCorrectionFR = kPSwerve * swerveErrFR + kDSwerve * swerveDerivativeFR; //Sent correction to pivot motor on the front right
 
   //FL
   swerveSetpointFL = (atan2(b, c) / M_PI) * 180;
 
-  swerveCurrFL = (-eFrontLeft->Get() / (59.3041667 * 7)) * 360;
+  swerveCurrFL = (-eFrontLeft->GetAccumulatorValue() / 5) * 360;
   swerveErrFL = swerveCurrFL - swerveSetpointFL;
   swerveDerivativeFL = swerveErrFL - swervePrevErrFL;
   swervePrevErrFL = swerveErrFL;
-  swerveCorrectionFL = kPSwerve * swerveErrFL + kDSwerve * swerveErrFL; //Sent correction to pivot motor on the front left
+  swerveCorrectionFL = kPSwerve * swerveErrFL + kDSwerve * swerveDerivativeFL; //Sent correction to pivot motor on the front left
 
   //BR
   swerveSetpointBR = (atan2(a, d) / M_PI) * 180;
 
-  swerveCurrBR = (-eBackRight->Get() / (59.3041667 * 7)) * 360;
+  swerveCurrBR = (-eBackRight->GetAccumulatorValue() / 5) * 360;
   swerveErrBR = swerveCurrBR - swerveSetpointBR;
   swerveDerivativeBR = swerveErrBR - swervePrevErrFR;
   swervePrevErrBR = swerveErrBR;
-  swerveCorrectionBR = kPSwerve * swerveErrBR + kDSwerve * swerveErrBR; //Sent correction to pivot motor on the back right
+  swerveCorrectionBR = kPSwerve * swerveErrBR + kDSwerve * swerveDerivativeBR; //Sent correction to pivot motor on the back right
 
   //BL
   swerveSetpointBL = (atan2(a, c) / M_PI) * 180;
 
-  swerveCurrBL = (-eBackLeft->Get() / (59.3041667 * 7)) * 360;
+  swerveCurrBL = (-eBackLeft->GetAccumulatorValue() / 5) * 360;
   swerveErrBL = swerveCurrBL - swerveSetpointBL;
   swerveDerivativeBL = swerveErrBL - swervePrevErrBL;
   swervePrevErrBL = swerveErrBL;
-  swerveCorrectionBL = kPSwerve * swerveErrBL + kDSwerve * swerveErrBL; //Sent correction to pivot motor on the back left
+  swerveCorrectionBL = kPSwerve * swerveErrBL + kDSwerve * swerveDerivativeBL; //Sent correction to pivot motor on the back left
 
   //SEND VALUES TO MOTORS
   pivotFrontRight->Set(swerveCorrectionFR);
@@ -94,11 +94,6 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
   frc::SmartDashboard::PutNumber("Back Right Angle", swerveCurrBR);
   frc::SmartDashboard::PutNumber("Back Left Angle", swerveCurrBL);
 
-  frc::SmartDashboard::PutNumber("a", a);
-  frc::SmartDashboard::PutNumber("b", b);
-  frc::SmartDashboard::PutNumber("c", c);
-  frc::SmartDashboard::PutNumber("d", d);
-
   frc::SmartDashboard::PutNumber("Sample Setpoint", swerveSetpointBL);
   frc::SmartDashboard::PutNumber("Sample Angular Vector", swerveCorrectionBL);
   frc::SmartDashboard::PutNumber("Sample Translation Vector", translateFrontRight);
@@ -106,8 +101,23 @@ void baseDrive::xyJoystickControl(double inputX1, double inputY, double inputX2)
 
 void baseDrive::encoderZero()
 {
-  eFrontLeft->Reset();
-  eFrontRight->Reset();
-  eFrontLeft->Reset();
-  eFrontLeft->Reset();
+  eFrontLeft->SetAccumulatorInitialValue(0);
+  eFrontLeft->SetAccumulatorCenter(0);
+  eFrontLeft->SetAccumulatorDeadband(5);
+  eFrontRight->ResetAccumulator();
+
+  eFrontRight->SetAccumulatorInitialValue(0);
+  eFrontRight->SetAccumulatorCenter(0);
+  eFrontRight->SetAccumulatorDeadband(5);
+  eFrontLeft->ResetAccumulator();
+
+  eBackRight->SetAccumulatorInitialValue(0);
+  eBackRight->SetAccumulatorCenter(0);
+  eBackRight->SetAccumulatorDeadband(5);
+  eBackRight->ResetAccumulator();
+
+  eBackLeft->SetAccumulatorInitialValue(0);
+  eBackLeft->SetAccumulatorCenter(0);
+  eBackLeft->SetAccumulatorDeadband(5);
+  eBackLeft->ResetAccumulator();
 }
